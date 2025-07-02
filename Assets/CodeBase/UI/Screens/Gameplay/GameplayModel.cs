@@ -20,8 +20,8 @@ namespace CodeBase.UI.Screens.Gameplay
         private readonly IFillPathSolver _fillPathSolver;
         private readonly IHintsTimerService _hintsTimerService;
         private readonly IGameplayAudioService _gameplayAudioService;
-        private readonly ReactiveProperty<int> _currentLevelIndex = new(0);
-        private readonly ReactiveProperty<int> _completedLevelPartsCount = new();
+        private readonly ReactiveProperty<int> _currentLevelIndex = new(-1);
+        private readonly ReactiveProperty<int> _completedLevelPartsCount = new(-1);
         private readonly CompositeDisposable _disposables = new();
 
         public ReadOnlyReactiveProperty<int> CompletedLevelPartsCount => _completedLevelPartsCount;
@@ -56,7 +56,10 @@ namespace CodeBase.UI.Screens.Gameplay
         public async UniTask CompleteLevelPart()
         {
             await _gameplayAudioService.PlayRandomRewardAudioAsync();
-            _completedLevelPartsCount.Value++;
+            int partsCount = _completedLevelPartsCount.Value;
+            _completedLevelPartsCount.Value = partsCount == -1
+                ? partsCount + 2
+                : partsCount + 1;
 
             if (_completedLevelPartsCount.Value != GetCurrentLevelData()
                 .FilledPartsCount)

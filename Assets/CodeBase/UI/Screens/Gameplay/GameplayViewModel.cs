@@ -12,8 +12,8 @@ namespace CodeBase.UI.Screens.Gameplay
         private readonly GameplayModel _model;
         private readonly CompositeDisposable _disposables = new();
         private readonly ReactiveProperty<LevelConstructorViewData> _currentLevelConstructorViewData = new();
-        private readonly AsyncReactiveProperty<int> _completedLevelParts = new(0);
-        private readonly ReactiveProperty<float> _currentFillAmount = new();
+        private readonly AsyncReactiveProperty<int> _completedLevelParts = new(-1);
+        private readonly ReactiveProperty<float> _currentFillAmount = new(-1f);
         private readonly ReactiveProperty<Vector2> _spaceShipPosition = new();
         private readonly CancellationTokenSource _completedLevelPartsCTS = new();
         
