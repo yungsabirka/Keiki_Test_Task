@@ -35,7 +35,8 @@ namespace CodeBase.Infrastructure.States.Core
             _gameStateMachine.AddState(new GameplayLoopState(_uiRootFactory, _objectsPool, _assetsProvider, _audioSystem));
             _gameStateMachine.AddState(new LoadGameplayState(_gameStateMachine, _sceneLoader));
             _gameStateMachine.AddState(new MainMenuLoopState(_uiRootFactory, _assetsProvider, _audioSystem));
-            _gameStateMachine.AddState(new ServicesInitializationState(_gameStateMachine, _levelsDataProvider, _objectsPool, _audioSystem));
+            _gameStateMachine.AddState(new ServicesInitializationState(_gameStateMachine, _levelsDataProvider, _objectsPool, _audioSystem,
+                _assetsProvider));
             _gameStateMachine.AddState(new UIRootInitState(_gameStateMachine, _uiRootFactory));
             _gameStateMachine.AddState(new LoadMainMenuState(_gameStateMachine, _sceneLoader));
         }

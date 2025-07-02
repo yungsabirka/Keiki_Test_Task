@@ -9,6 +9,9 @@ namespace CodeBase.Services.AssetsSystem
         private readonly Dictionary<string, AsyncOperationHandle> _completedCache = new();
         private readonly Dictionary<string, List<AsyncOperationHandle>> _handles = new();
 
+        public async UniTask Initialize() =>
+            await Addressables.InitializeAsync();
+
         public async UniTask<T> LoadAsync<T>(string assetPath) where T : class
         {
             if (_completedCache.TryGetValue(assetPath, out AsyncOperationHandle completedHandle))
@@ -29,13 +32,15 @@ namespace CodeBase.Services.AssetsSystem
 
         public void CleanUp()
         {
-            foreach (var handles in _handles.Values)
-            foreach (var handle in handles)
-                if (!_completedCache.ContainsValue(handle))
-                    Addressables.Release(handle);
-
+            foreach (var handles in _handles)
+            {
+                foreach (var handle in handles.Value)
+                {
+                    if (!_completedCache.TryGetValue(handles.Key, out var cachedHandle) || !cachedHandle.Equals(handle))
+                        Addressables.Release(handle);
+                }
+            }
             _handles.Clear();
-            _completedCache.Clear();
         }
 
         private void AddHandle<T>(string assetPath, AsyncOperationHandle<T> handle) where T : class
