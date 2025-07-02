@@ -44,8 +44,12 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 0
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
+  - {fileID: 11400000, guid: 42100c33dba14084a844f6b0b870ff5f, type: 2}
   - {fileID: 11400000, guid: e387b0b410a57ff4e92d45a1ac2eb7f9, type: 2}
   - {fileID: 11400000, guid: c66877d09b6b0ff4a83e8b341ae92387, type: 2}
+  - {fileID: 11400000, guid: 4e99575ec85f89e4db1cb7c638d46610, type: 2}
+  - {fileID: 11400000, guid: 4b3c63089d7f0f043b16e95d971e9d9e, type: 2}
+  - {fileID: 11400000, guid: 597258baef52e814097f53f5d7daeaaa, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -86,7 +90,7 @@ MonoBehaviour:
     m_ProfileVersion: 1
   m_LabelTable:
     m_LabelNames:
-    - default
+    - UI
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 2ac415c9e1a32fa40a44d7838430341f, type: 2}

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: UI Core Group
+  m_EditorClassIdentifier: 
+  m_GroupName: UI Core Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: e3cd6613c398afa45ae9361433c6ee15
+  m_SerializeEntries:
+  - m_GUID: 0c22559b130074c46837d8e830de1d9b
+    m_Address: UIRoot
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f029ff9ad4d2024f8d9562dd24ffe52
+    m_Address: MainMenuScreen
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48f61078fc852004983e999cdb853fd3
+    m_Address: GameplayScreen
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 06e4b0867ff137542ae04069d131b587, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: e61d1416ad999cd4ba3c754b715aac99, type: 2}
+    - {fileID: 11400000, guid: a6174edfd66345749bb9726823509f86, type: 2}

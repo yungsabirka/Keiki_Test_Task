@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: UI Elements
+  m_EditorClassIdentifier: 
+  m_GroupName: UI Elements
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 5d54a237f1a2d1a44ab9a69eb5e62bde
+  m_SerializeEntries:
+  - m_GUID: 0dace3c4d3f786b40a506c4efac8f87d
+    m_Address: HintStar
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56cf3a092677d754a8a2c36a482f73ab
+    m_Address: LevelShape
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cad3ca72e6312445a457f5a9930d675
+    m_Address: HorizontalLevelsContainer
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c31a5424efa17a4090c6a4cb4a75597
+    m_Address: LevelLetter
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b34ac008bd21a424c8c13e8b4dafdd91
+    m_Address: LevelNumber
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d498e65887fa8924ca67b64923cb328f
+    m_Address: LevelPage
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eac0d0fd00ad54b4cad4a25ec2523e40
+    m_Address: HintCircle
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 06e4b0867ff137542ae04069d131b587, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1bb0089f74e0ac042bcbc87980cffae2, type: 2}
+    - {fileID: 11400000, guid: eb8f152c96e0df24091c33ae9422a59b, type: 2}
