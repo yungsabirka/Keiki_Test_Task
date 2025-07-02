@@ -21,6 +21,8 @@ namespace CodeBase.Infrastructure
         {
             try
             {
+                Application.targetFrameRate = 60;
+                
                 DontDestroyOnLoad(gameObject);
                 _gameStatesInitializer.CreateGameStates();
                 await _stateMachine.Enter<BootstrapState>();

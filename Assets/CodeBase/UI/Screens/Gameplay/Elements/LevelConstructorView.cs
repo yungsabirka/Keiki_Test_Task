@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CodeBase.Data.Levels;
 using CodeBase.UI.Screens.Gameplay.Elements.Data;
 using DG.Tweening;
 using R3;
@@ -33,9 +32,9 @@ namespace CodeBase.UI.Screens.Gameplay.Elements
 
         private void OnDisable()
         {
+            Disabled.OnNext(Unit.Default);
             _disposables?.Dispose();
             _spaceShipTweener?.Kill();
-            Disabled.OnNext(Unit.Default);
         }
 
         public void Initialize(Color filledImageColor)

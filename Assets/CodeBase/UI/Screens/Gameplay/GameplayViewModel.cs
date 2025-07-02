@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading;
-using CodeBase.Data.Levels;
 using CodeBase.UI.Screens.Gameplay.Elements.Data;
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using R3;
 using UnityEngine;
@@ -17,20 +15,21 @@ namespace CodeBase.UI.Screens.Gameplay
         private readonly AsyncReactiveProperty<int> _completedLevelParts = new(0);
         private readonly ReactiveProperty<float> _currentFillAmount = new();
         private readonly ReactiveProperty<Vector2> _spaceShipPosition = new();
-
+        private readonly CancellationTokenSource _completedLevelPartsCTS = new();
+        
         private Tweener _fillAmountTween;
 
         public ReadOnlyAsyncReactiveProperty<int> CompletedLevelParts { get; private set; }
         public ReadOnlyReactiveProperty<LevelConstructorViewData> CurrentLevelConstructorViewData => _currentLevelConstructorViewData;
+        public CancellationToken CompletedLevelPartsToken => _completedLevelPartsCTS.Token;
         public ReadOnlyReactiveProperty<float> CurrentFillAmount => _currentFillAmount;
         public ReactiveProperty<Vector2> SpaceShipPosition => _spaceShipPosition;
-
         public Subject<Unit> LevelEnded { get; } = new();
 
         public GameplayViewModel(GameplayModel model)
         {
             _model = model;
-            CompletedLevelParts = new ReadOnlyAsyncReactiveProperty<int>(_completedLevelParts, CancellationToken.None);
+            CompletedLevelParts = new ReadOnlyAsyncReactiveProperty<int>(_completedLevelParts, _completedLevelPartsCTS.Token);
         }
 
         public void Initialize()
@@ -42,6 +41,8 @@ namespace CodeBase.UI.Screens.Gameplay
 
         public void Dispose()
         {
+            _completedLevelPartsCTS.Cancel();
+            _completedLevelPartsCTS.Dispose();
             _disposables?.Dispose();
             _model.Dispose();
             _fillAmountTween?.Kill();

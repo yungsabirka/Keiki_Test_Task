@@ -31,8 +31,6 @@ namespace CodeBase.Infrastructure.States
             await _gameStateMachine.Enter<GameplayLoopState, Action>(sceneEntryPoint.StartGame);
         }
 
-        public async UniTask Exit()
-        {
-        }
+        public async UniTask Exit() {}
     }
 }

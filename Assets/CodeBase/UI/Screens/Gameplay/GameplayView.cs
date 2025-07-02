@@ -1,6 +1,7 @@
-﻿using CodeBase.Data.Levels;
+﻿using System;
 using CodeBase.Infrastructure.UI;
 using CodeBase.UI.Screens.Gameplay.Elements;
+using CodeBase.UI.Screens.Gameplay.Elements.Data;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using R3;
@@ -17,11 +18,11 @@ namespace CodeBase.UI.Screens.Gameplay
         private GameplayViewModel _viewModel;
         private LevelConstructorView _levelConstructorView;
 
-        private void OnDestroy()
+        private void OnDisable()
         {
+            _viewModel.Dispose();
             _homeButton.onClick.RemoveAllListeners();
             _disposables?.Dispose();
-            _viewModel.Dispose();
         }
 
         public void Initialize(GameplayViewModel viewModel)
@@ -79,26 +80,44 @@ namespace CodeBase.UI.Screens.Gameplay
 
         private async UniTask InitializeNextLevelPart(int completedLevelPartsCount)
         {
-            _levelConstructorView.HideHints();
-            for (int i = 0; i < _levelConstructorView.InteractiveFillImages.Count; i++)
+            try
             {
-                var filledImage = _levelConstructorView.InteractiveFillImages[i];
-                if (completedLevelPartsCount == i)
+                var cancellationToken = _viewModel.CompletedLevelPartsToken;
+                cancellationToken.ThrowIfCancellationRequested();
+                _levelConstructorView.HideHints();
+
+                for (int i = 0; i < _levelConstructorView.InteractiveFillImages.Count; i++)
                 {
-                    filledImage.SetActive(true);
-                    _levelConstructorView.MoveSpaceShipToPosition(filledImage.GetStartPosition());
-                    _levelConstructorView.SetActiveFillImage(filledImage);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    if (completedLevelPartsCount == 0)
-                        await _viewModel.PlayLevelStartAudioAsync();
+                    var filledImage = _levelConstructorView.InteractiveFillImages[i];
 
-                    _levelConstructorView.ShowHints();
+                    if (completedLevelPartsCount == i)
+                    {
+                        filledImage.SetActive(true);
+                        _levelConstructorView.MoveSpaceShipToPosition(filledImage.GetStartPosition());
+                        _levelConstructorView.SetActiveFillImage(filledImage);
+
+                        if (completedLevelPartsCount == 0)
+                            await _viewModel.PlayLevelStartAudioAsync().AttachExternalCancellation(cancellationToken);
+                        
+                        _levelConstructorView.ShowHints();
+                    }
+                    else if (completedLevelPartsCount < i)
+                    {
+                        filledImage.SetActive(false);
+                    }
                 }
-                else if (completedLevelPartsCount < i)
-                    filledImage.SetActive(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                _viewModel.StartHintsTimer();
             }
-            _viewModel.StartHintsTimer();
+            catch (OperationCanceledException) {}
+            catch (Exception ex)
+            {
+                Debug.LogError($"InitializeNextLevelPart failed: {ex}");
+            }
         }
+
 
         private void SubscribeForLevelViewDataChanged()
         {

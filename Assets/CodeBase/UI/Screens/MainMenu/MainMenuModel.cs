@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CodeBase.Data;
 using CodeBase.Data.Levels;
 using CodeBase.Infrastructure.States;
 using CodeBase.Infrastructure.States.Core;

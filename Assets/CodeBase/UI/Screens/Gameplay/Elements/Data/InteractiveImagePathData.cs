@@ -1,7 +1,7 @@
 ﻿using System;
 using CodeBase.UI.Screens.Gameplay.Services.FillPathSolver;
 using UnityEngine;
-namespace CodeBase.Data.Levels
+namespace CodeBase.UI.Screens.Gameplay.Elements.Data
 {
     [Serializable]
     public class InteractiveImagePathData

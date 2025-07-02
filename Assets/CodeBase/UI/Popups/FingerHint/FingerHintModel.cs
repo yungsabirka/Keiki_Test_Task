@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CodeBase.UI.Screens.Gameplay.Services.FillPathSolver;
 using CodeBase.UI.Screens.Gameplay.Services.HintsTimerService;
 using R3;
@@ -26,9 +27,9 @@ namespace CodeBase.UI.Popups.FingerHint
             SubscribeForVisualHintTimerStarted();
         }
         
-        public Vector2 GetPositionByFillAmount(FillType type, Vector2 startPosition, Vector2 endPosition, float fillAmount) =>
-            _fillPathSolver.GetPositionByFillAmount(type, startPosition, endPosition, fillAmount);
-        
+        public List<Vector2> GetAnimationPath(FillType type, Vector2 start, Vector2 end, float distanceBetweenPoints, float fillAmount) =>
+            _fillPathSolver.GetPath(type, start, end, distanceBetweenPoints, fillAmount);
+
         public void Dispose() =>
             _disposable?.Dispose();
 

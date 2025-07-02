@@ -21,10 +21,8 @@ namespace CodeBase.UI.Screens.MainMenu
 
         private MainMenuViewModel _viewModel;
 
-        private void OnDestroy()
-        {
+        private void OnDestroy() =>
             _disposables?.Dispose();
-        }
 
         public void Initialize(MainMenuViewModel viewModel)
         {

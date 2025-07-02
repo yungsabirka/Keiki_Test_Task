@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CodeBase.Data.Levels;
 using CodeBase.Services.AudioSystem.AudioSystem;
 using CodeBase.Services.AudioSystem.Data;
-using CodeBase.UI.Screens.Gameplay.Services.HintsTimerService;
 using Cysharp.Threading.Tasks;
 namespace CodeBase.UI.Screens.Gameplay.Services.AudioService
 {
@@ -12,7 +11,7 @@ namespace CodeBase.UI.Screens.Gameplay.Services.AudioService
         private readonly IAudioSystem _audioSystem;
         private readonly List<AudioType> _rewardAudioTypes;
 
-        public GameplayAudioService(IAudioSystem audioSystem, IHintsTimerService hintsTimerService)
+        public GameplayAudioService(IAudioSystem audioSystem)
         {
             _audioSystem = audioSystem;
             _rewardAudioTypes = new List<AudioType>

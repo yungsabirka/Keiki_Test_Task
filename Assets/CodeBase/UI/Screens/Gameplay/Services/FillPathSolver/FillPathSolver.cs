@@ -26,5 +26,13 @@ namespace CodeBase.UI.Screens.Gameplay.Services.FillPathSolver
 
             throw new ArgumentOutOfRangeException(nameof(type), $"Unsupported fill type: {type}");
         }
+
+        public List<Vector2> GetPath(FillType type, Vector2 start, Vector2 end, float distanceBetweenPoints, float fillAmount)
+        {
+            if (_strategies.TryGetValue(type, out var strategy))
+                return strategy.GetPath(start, end, distanceBetweenPoints, fillAmount);
+
+            throw new ArgumentOutOfRangeException(nameof(type), $"Unsupported fill type: {type}");
+        }
     }
 }

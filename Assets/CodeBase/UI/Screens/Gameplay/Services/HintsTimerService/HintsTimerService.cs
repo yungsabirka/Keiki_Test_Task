@@ -1,7 +1,7 @@
 ﻿using System;
 using CodeBase.Services.Timer;
 using R3;
-using static CodeBase.Services.Timer.TimerConstants;
+using static CodeBase.UI.Screens.Gameplay.Services.HintsTimerService.HintsTimerConstants;
 namespace CodeBase.UI.Screens.Gameplay.Services.HintsTimerService
 {
     public class HintsTimerService : IHintsTimerService, IDisposable

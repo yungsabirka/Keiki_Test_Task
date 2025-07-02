@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using CodeBase.Data.Levels;
 using CodeBase.Infrastructure.States;
 using CodeBase.Infrastructure.States.Core;
 using CodeBase.Services.LevelsProvider;
+using CodeBase.UI.Screens.Gameplay.Elements.Data;
 using CodeBase.UI.Screens.Gameplay.Services.AudioService;
 using CodeBase.UI.Screens.Gameplay.Services.FillPathSolver;
 using CodeBase.UI.Screens.Gameplay.Services.HintsTimerService;

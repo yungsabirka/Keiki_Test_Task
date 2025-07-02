@@ -3,10 +3,9 @@ using CodeBase.Services.AssetsSystem;
 using CodeBase.Services.AudioSystem.AudioPlayer;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using static CodeBase.Services.AssetsSystem.Data.AssetsSystemConstants;
 using AudioConfiguration = CodeBase.Services.AudioSystem.Data.AudioConfiguration;
 using AudioType = CodeBase.Services.AudioSystem.Data.AudioType;
-using Object = UnityEngine.Object;
+using static CodeBase.Services.AssetsSystem.Data.AssetsSystemConstants;
 namespace CodeBase.Services.AudioSystem.AudioSystem
 {
     public class AudioSystem : IAudioSystem
@@ -33,8 +32,12 @@ namespace CodeBase.Services.AudioSystem.AudioSystem
             if(audioType == AudioType.None)
                 throw new ArgumentException("Can not play a non-audio type");
 
+            Stop();
             await _audioPlayer.PlayOneShotAsync(GetAudioClip(audioType));
         }
+        
+        public void Stop() =>
+            _audioPlayer.Stop();
 
         private AudioClip GetAudioClip(AudioType audioType) => 
             _audioConfiguration.GetAudioClip(audioType);

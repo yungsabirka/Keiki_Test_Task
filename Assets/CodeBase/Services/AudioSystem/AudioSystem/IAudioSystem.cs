@@ -7,5 +7,7 @@ namespace CodeBase.Services.AudioSystem.AudioSystem
         UniTask Initialize();
 
         UniTask PlayOneShotAsync(AudioType audioType);
+
+        void Stop();
     }
 }

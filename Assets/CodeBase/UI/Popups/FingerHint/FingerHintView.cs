@@ -1,10 +1,9 @@
 ﻿using CodeBase.Infrastructure.UI;
+using CodeBase.UI.Popups.FingerHint.Data;
 using CodeBase.UI.Screens.Gameplay.Elements;
-using CodeBase.UI.Screens.Gameplay.Services.FillPathSolver;
 using DG.Tweening;
 using R3;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 namespace CodeBase.UI.Popups.FingerHint
 {
@@ -33,6 +32,7 @@ namespace CodeBase.UI.Popups.FingerHint
             _viewModel = viewModel;
             SubscribeForVisualHintRequested();
             SubscribeForVisualHintHideRequested();
+            SubscribeForAnimationPathReady();
             _fingerImage.transform.localScale = Vector3.zero;
         }
 
@@ -52,6 +52,14 @@ namespace CodeBase.UI.Popups.FingerHint
             _disposable.Add(visualHintRequestedSubscription);
         }
 
+        private void SubscribeForAnimationPathReady()
+        {
+            var animationPathSubscription = _viewModel
+                .AnimationPathReady
+                .Subscribe(OnAnimationPathReady);
+            _disposable.Add(animationPathSubscription);
+        }
+
         private void OnVisualHintHideRequested()
         {
             KillFingerTweens();
@@ -64,25 +72,29 @@ namespace CodeBase.UI.Popups.FingerHint
         {
             KillFingerTweens();
             UpdateFingerSize();
+            var activeFillImage = _levelConstructorView.ActiveFillImage;
+
+            _viewModel.PrepareAnimationPath(
+                activeFillImage.GetFillType(),
+                activeFillImage.GetStartPosition(),
+                activeFillImage.GetEndPosition(),
+                activeFillImage.GetContourWidth() / 2,
+                activeFillImage.GetFillAmount());
+        }
+
+        private void StartFingerAnimation(FingerAnimationPathData pathData)
+        {
             _showAndMoveSequence = DOTween.Sequence();
             _showAndMoveSequence.Append(_fingerImage.transform.DOScale(Vector3.one, 0.3f));
+            _fingerImage.transform.position = pathData.Positions[0];
+            float singleDuration = pathData.PathLength / (pathData.Positions.Count * _fingerSpeed);
+            
+            for (int i = 1; i < pathData.Positions.Count; i++)
+                _showAndMoveSequence.Append(_fingerImage
+                    .transform
+                    .DOMove(pathData.Positions[i], singleDuration)
+                    .SetEase(Ease.Linear));
 
-            var activeFillImage = _levelConstructorView.ActiveFillImage;
-            var fillType = activeFillImage.GetFillType();
-            Vector2 start = GetFingerStartPosition();
-            Vector2 end = activeFillImage.GetEndPosition();
-
-            _fingerImage.transform.position = start;
-
-            switch (fillType)
-            {
-                case FillType.Linear:
-                    AddLinearMoving(end, start);
-                    break;
-                case FillType.Radial:
-                    AddRadialMoving(activeFillImage, start);
-                    break;
-            }
             _showAndMoveSequence.Append(_fingerImage.transform.DOScale(Vector3.zero, 0.3f));
             _showAndMoveSequence.AppendInterval(3f);
             _showAndMoveSequence.SetLoops(-1, LoopType.Restart);
@@ -96,69 +108,13 @@ namespace CodeBase.UI.Popups.FingerHint
             _fingerImage.rectTransform.sizeDelta = new Vector2(contourWidth, fingerAspectRatio * contourWidth);
         }
 
-        private void AddLinearMoving(Vector2 end, Vector2 start)
-        {
-            float duration = Vector2.Distance(end, start) / _fingerSpeed;
-            _showAndMoveSequence.Append(_fingerImage.transform.DOMove(end, duration));
-        }
-
-        private void AddRadialMoving(InteractiveFillImage activeFillImage, Vector2 start)
-        {
-            Vector2 startPosition = activeFillImage.GetStartPosition();
-            Vector2 endPosition = activeFillImage.GetEndPosition();
-            Vector2 center = (startPosition + endPosition) * 0.5f;
-            float radius = Vector2.Distance(center, startPosition);
-
-            Vector2 fromCenterToStart = start - center;
-            Vector2 fromCenterToTarget = startPosition - center;
-
-            float startAngle = Mathf.Atan2(fromCenterToStart.y, fromCenterToStart.x) * Mathf.Rad2Deg;
-            float targetAngle = Mathf.Atan2(fromCenterToTarget.y, fromCenterToTarget.x) * Mathf.Rad2Deg;
-
-            startAngle = NormalizeAngle(startAngle);
-            targetAngle = NormalizeAngle(targetAngle);
-            float angleDelta = Vector2.Distance(start, startPosition) < 0.01f
-                ? 360f
-                : (startAngle - targetAngle + 360f) % 360f;
-            ;
-
-            int segments = Mathf.Max(1, Mathf.CeilToInt(angleDelta / 5f));
-            float duration = angleDelta / 180f;
-
-            for (int i = 1; i <= segments; i++)
-            {
-                float t = i / (float)segments;
-                float angle = startAngle - angleDelta * t;
-                float rad = angle * Mathf.Deg2Rad;
-                Vector2 point = center + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad)) * radius;
-
-                _showAndMoveSequence.Append(_fingerImage
-                    .transform
-                    .DOMove(point, duration / segments)
-                    .SetEase(Ease.Linear));
-            }
-        }
-
-
-        private float NormalizeAngle(float angle)
-        {
-            angle %= 360f;
-            if (angle < 0f)
-                angle += 360f;
-            return angle;
-        }
-
-        private Vector2 GetFingerStartPosition()
-        {
-            InteractiveFillImage activeFillImage = _levelConstructorView.ActiveFillImage;
-            return _viewModel.GetPositionByFillAmount(activeFillImage.GetFillType(), activeFillImage.GetStartPosition(),
-                activeFillImage.GetEndPosition(), activeFillImage.GetFillAmount());
-        }
-
         private void KillFingerTweens()
         {
             _hideTweener?.Kill();
             _showAndMoveSequence?.Kill();
         }
+
+        private void OnAnimationPathReady(FingerAnimationPathData pathData) => 
+            StartFingerAnimation(pathData);
     }
 }

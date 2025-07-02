@@ -12,15 +12,11 @@ namespace CodeBase.UI.Screens.MainMenu
         
         public IReadOnlyObservableList<LevelPageViewData> PagesViewData => _pagesViewData;
 
-        public MainMenuViewModel(MainMenuModel model)
-        {
+        public MainMenuViewModel(MainMenuModel model) =>
             _model = model;
-        }
 
-        public void Initialize()
-        {
+        public void Initialize() =>
             CreateLevelPagesViewData();
-        }
 
         private void CreateLevelPagesViewData()
         {
@@ -32,11 +28,9 @@ namespace CodeBase.UI.Screens.MainMenu
             }
         }
 
-        public void OpenLevel(LevelType levelType, Color color)
-        {
+        public void OpenLevel(LevelType levelType, Color color) =>
             _model
-                .LoadGameplay(levelType, color)
-                .Forget();
-        }
+            .LoadGameplay(levelType, color)
+            .Forget();
     }
 }

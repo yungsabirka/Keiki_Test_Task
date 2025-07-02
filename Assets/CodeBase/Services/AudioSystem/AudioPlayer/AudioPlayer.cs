@@ -11,7 +11,7 @@ namespace CodeBase.Services.AudioSystem.AudioPlayer
 
         public void Initialize()
         {
-            _audioRoot = new GameObject("AudioSystem_Runtime");
+            _audioRoot = new GameObject("AudioPlayer_Runtime");
             Object.DontDestroyOnLoad(_audioRoot);
 
             _audioSource = _audioRoot.AddComponent<AudioSource>();

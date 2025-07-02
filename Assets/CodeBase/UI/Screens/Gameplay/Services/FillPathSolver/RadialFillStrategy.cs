@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 namespace CodeBase.UI.Screens.Gameplay.Services.FillPathSolver
 {
     public class RadialFillStrategy : IFillAmountStrategy
@@ -51,7 +52,40 @@ namespace CodeBase.UI.Screens.Gameplay.Services.FillPathSolver
 
             return positionOnCircle;
         }
-        
+
+        public List<Vector2> GetPath(Vector2 start, Vector2 end, float distanceBetweenPoints, float fillAmount)
+        {
+            float fullCircleRad = 2f * Mathf.PI;
+
+            Vector2 center = (start + end) * 0.5f;
+            float radius = Vector2.Distance(start, end) * 0.5f;
+            Vector2 radiusVector = start - center;
+
+            float totalArcLength = radius * fullCircleRad;
+            int count = Mathf.Max(1, Mathf.FloorToInt(totalArcLength / distanceBetweenPoints));
+
+            float startAngle = Mathf.Atan2(radiusVector.y, radiusVector.x);
+            float filledAngle = fillAmount * fullCircleRad;
+
+            var path = new List<Vector2>(count);
+
+            for (int i = 0; i < count; i++)
+            {
+                float t = i / (float)(count - 1);
+                float angle = -(startAngle + filledAngle + t * (fullCircleRad - filledAngle));
+
+                Vector2 point = new Vector2(
+                    center.x + radius * Mathf.Cos(angle),
+                    center.y + radius * Mathf.Sin(angle)
+                );
+
+                path.Add(point);
+            }
+
+            return path;
+        }
+
+
         private float NormalizeAngle(float angle)
         {
             angle %= 360f;

@@ -12,14 +12,18 @@ namespace CodeBase.UI.Screens.Gameplay.Services.HintsPath
     public class HintsPathService : IHintsPathService, IDisposable
     {
         private readonly IGameplayElementsFactory _gameplayElementsFactory;
+        private readonly IFillPathSolver _fillPathSolver;
         private readonly List<HintView> _hints = new();
         private readonly CompositeDisposable _disposables = new();
 
         private IHintsContainer _hintsContainer;
         private Sequence _showHintsSequence;
 
-        public HintsPathService(IGameplayElementsFactory gameplayElementsFactory) =>
+        public HintsPathService(IGameplayElementsFactory gameplayElementsFactory, IFillPathSolver fillPathSolver)
+        {
             _gameplayElementsFactory = gameplayElementsFactory;
+            _fillPathSolver = fillPathSolver;
+        }
 
         public void Initialize(IHintsContainer hintsContainer)
         {
@@ -49,15 +53,14 @@ namespace CodeBase.UI.Screens.Gameplay.Services.HintsPath
         {
             const float showDuration = 1f;
             ResetHints();
-            switch (data.FillType)
-            {
-                case FillType.Linear:
-                    CreateLinearHints(data.StartPosition, data.EntPosition, data.ContourWidth);
-                    break;
-                case FillType.Radial:
-                    CreateRadialHints(data.StartPosition, data.EntPosition, data.ContourWidth);
-                    break;
-            }
+
+            float distanceBetweenHints = 2f * data.ContourWidth * GetHintScale(HintType.Circle);
+            List<Vector2> positions = _fillPathSolver
+                .GetPath(data.FillType, data.StartPosition, data.EntPosition, distanceBetweenHints, 0f);
+
+            for (int i = 0; i < positions.Count; ++i)
+                CreateHintView(data.ContourWidth, i, positions.Count, positions[i]);
+
             ShowHints(showDuration);
         }
 
@@ -66,7 +69,7 @@ namespace CodeBase.UI.Screens.Gameplay.Services.HintsPath
             _showHintsSequence?.Kill();
             _showHintsSequence = DOTween.Sequence();
             float singleDuration = showDuration / _hints.Count;
-            foreach(var hint in _hints)
+            foreach (var hint in _hints)
                 _showHintsSequence.Append(hint.Show(singleDuration));
 
             _showHintsSequence.Play();
@@ -78,44 +81,6 @@ namespace CodeBase.UI.Screens.Gameplay.Services.HintsPath
             foreach (var hint in _hints)
                 hint.ResetPoolable();
             _hints.Clear();
-        }
-
-        private void CreateLinearHints(Vector2 start, Vector2 end, float contourWidth)
-        {
-            float pathLength = Vector2.Distance(start, end);
-            int hintCount = GetHintsCount(contourWidth, pathLength);
-
-            for (int i = 0; i < hintCount; i++)
-            {
-                float t = (i + 1f) / (hintCount + 1f);
-                Vector2 position = Vector2.Lerp(start, end, t);
-
-                CreateHintView(contourWidth, i, hintCount, position);
-            }
-        }
-
-        private void CreateRadialHints(Vector2 start, Vector2 end, float contourWidth)
-        {
-            Vector2 center = (start + end) / 2f;
-            float radius = Vector2.Distance(start, end) / 2f;
-            float circumference = 2 * Mathf.PI * radius;
-            int hintCount = GetHintsCount(contourWidth, circumference);
-
-            Vector2 radiusVector = start - center;
-            float startAngle = Mathf.Atan2(radiusVector.y, radiusVector.x);
-
-            for (int i = 0; i < hintCount; i++)
-            {
-                float angleOffset = -2f * Mathf.PI * (i / (float)hintCount);
-                float angle = startAngle + angleOffset;
-
-                Vector2 position = new Vector2(
-                    center.x + radius * Mathf.Cos(angle),
-                    center.y + radius * Mathf.Sin(angle)
-                );
-
-                CreateHintView(contourWidth, i, hintCount, position);
-            }
         }
 
         private void CreateHintView(float contourWidth, int hintNumber, int hintCount, Vector2 position)
@@ -130,9 +95,6 @@ namespace CodeBase.UI.Screens.Gameplay.Services.HintsPath
             _hints.Add(hint);
             _hintsContainer.AddHintView(hint);
         }
-
-        private int GetHintsCount(float contourWidth, float pathLength) =>
-            Mathf.Max(1, Mathf.FloorToInt(pathLength / (2f * contourWidth * GetHintScale(HintType.Circle))));
 
         private float GetHintScale(HintType hintType) =>
             hintType == HintType.Circle
