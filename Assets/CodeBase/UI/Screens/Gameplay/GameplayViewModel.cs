@@ -117,6 +117,6 @@ namespace CodeBase.UI.Screens.Gameplay
             Mathf.Approximately(_currentFillAmount.Value, 1f);
 
         private bool CanChangeFillAmount(float fillAmount) =>
-            fillAmount - _currentFillAmount.Value is > 0f and < 0.05f;
+            fillAmount - _currentFillAmount.Value > 0f;
     }
 }
